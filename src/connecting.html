@@ -1,0 +1,94 @@
+<h1>Getting Connected</h1>
+<h2>Secure Shell (SSH)</h2>
+<p>SSH provides a secure, remote terminal connection to the login nodes. There are a number of&nbsp;<em>rice</em> servers providing login service (<em>e.g.</em>, <em>rice01</em>, <em>rice02</em>); the easiest way to connect is using the load-balanced name, <em>rice.stanford.edu</em>, which will select one for you according to recent utilization.</p>
+<h3>Using SSH on Linux and macOS</h3>
+<p>Simply open up your favorite terminal program (on macOS you can use the built-in Terminal application or something like <a href="http://iterm2.com">iTerm</a>) and run the <code>ssh</code> command like so, replacing <em>sunetid</em> with your own SUNet ID:</p>
+<pre>
+ssh <em>sunetid</em>@rice.stanford.edu
+</pre>
+<p>Depending on your environment and configuration you may be prompted for your SUNet ID password, and you&#39;ll need to complete your login using <a href="https://uit.stanford.edu/service/webauth/twostep">two-step authentication</a>. On most computers, that&#39;s all you need to do.</p>
+<p><code>ssh</code> does have many configuration options, however, and you can customize these in&nbsp;<code>~/.ssh/config</code>&nbsp;on your local computer. The following is a minimal <code>config</code> file you can use with FarmShare 2 that may make connecting more convenient (run <code>man ssh_config</code> for a complete list of options).</p>
+<pre>
+IgnoreUnknown GSSAPIKeyExchange
+
+Host rice rice?? wheat wheat?? oat oat??
+  HostName %h.stanford.edu
+
+Host rice rice?? rice??.stanford.edu
+  HostKeyAlias rice.stanford.edu
+
+Host wheat wheat?? wheat??.stanford.edu
+  HostKeyAlias wheat.stanford.edu
+
+Host oat oat?? oat??.stanford.edu
+  HostKeyAlias oat.stanford.edu
+
+Host rice rice.stanford.edu rice?? rice??.stanford.edu
+  ControlMaster auto
+  ControlPersist yes
+  GSSAPIDelegateCredentials yes
+
+Host *
+  ControlPath ~/.ssh/%r@%h:%p
+  GSSAPIKeyExchange yes
+  GSSAPIAuthentication yes
+  ServerAliveInterval 60
+</pre>
+<p>Current <a href="/farmshare2/connecting-keys">host keys and fingerprints</a>&nbsp;are published if you&#39;d like to verify them.</p>
+<h3>Using SSH on Windows</h3>
+<p>Windows does not have a built-in SSH client, but a number are available from third parties.</p>
+<h4>MobaXterm</h4>
+<p><a href="http://mobaxterm.mobatek.net">MobaXterm</a>&nbsp;is an SSH client with a built-in X server, making <a href="#mobadisplay">remote display</a> extremely convenient, and the Home Edition is free for personal use. Detailed <a href="https://farmshare.stanford.edu/index.php/Mobaxterm">configuration instructions</a> are available on the FarmShare wiki and are easily adaptable to FarmShare 2.</p>
+<h4>PuTTY</h4>
+<p><a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/">PuTTY</a>&nbsp;is a popular, freely available SSH client for Windows. The default settings are appropriate for most users, so all you need to do is specify the host name and click the Open button to connect. Aat the <code>login as:</code> prompt, enter your SUNet ID, and authenticate by password if asked. A number of configuration options are available, and PuTTY allows you to customize your connection settings and save them as a session. The next time you start the application you can load the saved configuration by selecting the desired session and clicking the Load button.</p>
+<p>PuTTY supports GSSAPI authentication as of version 0.61 and will automatically use your existing Kerberos credentials for login, if available. You may also want to enable Kerberos ticket forwarding by checking the&nbsp;<strong>Connection</strong> &rarr; <strong>SSH</strong> &rarr; <strong>Auth</strong> &rarr; <strong>GSSAPI</strong> &rarr; <strong>Allow GSSAPI credential delegation</strong>&nbsp;box.</p>
+<h4>SecureCRT</h4>
+<p><a href="https://uit.stanford.edu/software/securecrt">SecureCRT</a> is full-featured, commercial SSH client for Windows and is site-licensed for use at Stanford. Default settings should be appropriate; all you need to specify are the host name and (optionally) your user name (SUNet ID). Like PuTTY, SecureCRT offers a host of configuration options, and you can save a session to make connecting more convenient.</p>
+<p>You can enable GSSAPI authentication in SecureCRT&#39;s <strong>Session Options</strong> dialog, in category <strong>Connection</strong> &rarr; <strong>SSH2</strong>. Make sure <strong>Authentication</strong> &rarr; <strong>GSSAPI and Key exchange</strong> &rarr; <strong>Kerberos (Group Exchange)</strong> is checked. SecureCRT attempts authentication and key exchange methods in the order listed, so these methods should be moved to the top of their stacks using the arrow buttons to the right of each field.</p>
+<h2>Mobile Shell (Mosh)</h2>
+<p><a href="https://mosh.org">Mosh</a> is an alternative to SSH for Linux and macOS clients. It uses SSH for authentication, so you may want to review the suggested <a href="#sshconfig">SSH configuration</a> above. Mosh has some advantages, including predictive display, which can be useful on high-latency connections, and improved network resiliency. Mosh connections can persist when you switch networks and can even survive putting your computer to sleep.</p>
+<h2>Remote Display</h2>
+<p>Some applications allow (or require) the use of a graphical display. You can connect to&nbsp;<em>rice</em>systems using X Windows for remote display, but please remember that resources on these workstations are limited, so only modest applications are supported. If your use-case is CPU- or memory-intensive you should use the VNC method to submit a remote display job to one of the compute nodes.</p>
+<h3><span style="color: inherit; font-family: inherit;">Using X11 on Linux</span></h3>
+<p>X Window is the native graphical interface on Linux systems, and SSH provides a built-in method for forwarding a remote display to the local computer. You can enable forwarding with the <code>-X</code> flag.</p>
+<pre>
+ssh -X <em>sunetid</em>@rice.stanford.edu</pre>
+<p>Then, simply start your application (you can test with something like <code>xeyes</code>).</p>
+<h3>Using XQuartz on macOS</h3>
+<p>The version of SSH distributed with macOS supports automatic display forwarding with the <code>-X</code> flag, but macOS does not provide an X Window server by default. Luckily, a port of the X.Org server is availble: <a href="https://www.xquartz.org">XQuartz</a>. You&#39;ll need to download and install the software and make sure it&#39;s running before you connect.</p>
+<pre>
+ssh -X <em>sunetid</em>@rice.stanford.edu
+</pre>
+<p><a name="mobadisplay"></a></p>
+<h3>Using MobaXterm on Windows</h3>
+<p>MobaXterm&nbsp;<em>automatically</em> forwards the display when connecting. Check out the <a href="https://farmshare.stanford.edu/index.php/Mobaxterm">configuration instructions</a> on the FarmShare wiki.</p>
+<h3 style="font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif; color: rgb(51, 51, 51);">Using VNC</h3>
+<p>VNC is less convenient than X Windows, but is useful for persistent sessions and cases where you need or would like a remote desktop environment. The TurboVNC server is available as a module; you can load it with&nbsp;<code>module load turbovnc</code>. Then, start a session with the&nbsp;<code>vncserver</code>command.</p>
+<p>You may be asked to set a VNC password if this is the first time you have started&nbsp;<code>vncserver</code>. We recommend setting a random 8-character password and using the&nbsp;<code>-otp</code>&nbsp;option to create a random, single-use password for every new session, instead.</p>
+<pre>
+$ vncserver -otp -geometry 1680x1050
+
+Desktop &#39;TurboVNC: rice05:3 (sunetid)&#39; started on display rice05:3
+
+One-Time Password authentication enabled.  Generating initial OTP ...
+Full control one-time password: 11578481
+Run &#39;vncpasswd -o&#39; from within the TurboVNC session or
+    &#39;vncpasswd -o -display rice05:3&#39; from within this shell
+    to generate additional OTPs
+Starting applications specified in /home/sunetid/.vnc/xstartup.turbovnc
+Log file is /home/sunetid/.vnc/rice05:3.log
+</pre>
+<p>Note you can specify the size of the display using the&nbsp;<code>-geometry</code>&nbsp;option. Once the server is running you&#39;ll need to create a secure tunnel using&nbsp;<code>ssh</code>&nbsp;to connect to the display. Note the system name and the display number in the output of&nbsp;<code>vncserver</code>&nbsp;(in this example, rice05 and display number 3:&nbsp;<code>rice05:3</code>), as you&#39;ll need them for the next step!</p>
+<p>Open a new terminal window and make a new SSH connection to the target system. The syntax for creating the tunnel is obscure, and expects port numbers rather than display numbers. The local port is listed first, followed by &quot;localhost,&quot; and finally the remote port. You can almost always use 5901 for the local port, but the remote port should be the display number&nbsp;<span style="font-style: italic; padding: 0px 3px 0px 0px;">plus</span>&nbsp;5900! In this example, the remote port is 5900 + 3 = 5903, and so the tunneling syntax to use is:&nbsp;<code>-L 5901:localhost:5903</code>.</p>
+<pre>
+ssh -C -L 5901:localhost:5903 rice05.stanford.edu
+</pre>
+<p>Now you&#39;re ready to connect! Macs have a built-in VNC client called Screen Sharing, so you can connect by selecting&nbsp;<span style="font-weight: 600;">Go &rarr; Connect to Server</span>&nbsp;or pressing&nbsp;<span style="font-weight: 600;">command-K</span>&nbsp;in the Finder and using the Server Address:&nbsp;<code>vnc://localhost:5901</code>. The port number here is the local port used above, and should usually be 5901. You&#39;ll be prompted for a password; just use the one-time password from the output of&nbsp;<code>vncserver</code>&nbsp;(11578481&nbsp;in the example above). If you see a blank desktop you can right-click to open a terminal window.</p>
+<p>Connecting on a Windows or Linux machine may require additional software. On Windows the&nbsp;<a href="http://www.turbovnc.org">TurboVNC</a>&nbsp;client is a popular choice, and there are some clients that have native support for SSH tunneling, which can make connecting much easier (as tunneling is less convenient to configure on Windows SSH clients). The&nbsp;<a href="https://web.stanford.edu/group/farmshare/cgi-bin/wiki/index.php/FarmVNC#choice_of_vnc_client">FarmShare wiki</a>&nbsp;has some additional information that can be adapted to FarmShare 2, but note that FarmVNC is deprecated.</p>
+<p>When you&#39;re finished with your session: close your VNC client, quit the SSH connection you used for tunneling, and shutdown&nbsp;<code>vncserver</code>&nbsp;using the&nbsp;<code>-kill</code>&nbsp;option followed by a colon and the active display number:</p>
+<pre>
+$ vncserver -kill :3
+Killing Xvnc process ID 14722
+</pre>
+<p><span style="font-weight: 600;">We hope to have an improved process for VNC desktops soon!</span></p>
+
