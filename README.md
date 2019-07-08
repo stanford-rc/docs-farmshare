@@ -3,7 +3,7 @@
 This is the Farmshare (version 2) documentation base. It is
 driven by [mkdocs-jekyll](https://www.github.com/vsoch/mkdocs-jekyll).
 
-<div style="width:50%; align:center">
+<div style="width:50%;">
      <img src="assets/img/logo/farmshare-red-pot.png">
 </div><br>
 
