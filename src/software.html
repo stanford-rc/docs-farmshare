@@ -1,0 +1,413 @@
+<h1>Using Software on Farmshare2</h1>
+<p class="summary">So, you&#39;ve logged in to FarmShare, and now you want to do something on it?&nbsp; We can help you with that!&nbsp; In addition to the software that we already have available, we have tools for you to build/install your own.</p>
+<!--break-->
+<h2>The Three Software Sources</h2>
+<p>Software on FarmShare 2 comes from three sources:</p>
+<ul>
+	<li><a href="#packages"><strong>Packages</strong></a>, which have all of the software bits in one (or a series of) easy-to-deploy blobs, and which are installed directly on to each system.</li>
+	<li><a href="#modules"><strong>Modules</strong></a>, which either we built ourselves or we obtained from a vendor, and which are sitting on network storage that is accessible by each system.</li>
+	<li><a href="#custom"><strong>Your own stuff</strong></a>, which you have created yourself, and which typically sits in your home directory (which is on network storage), or which sits in some other common location (again, on network storage).</li>
+</ul>
+<p>Of course, you probably don&#39;t care much about <em>what kind</em> of software we have, you just want to know <em>what</em> we have!&nbsp; Well, that&#39;s easy enough: <a href="#list">Go to the list of software</a>.</p>
+<h3><a id="packages" name="packages"></a>Packages</h3>
+<p>Packaged software is easiest to use, because you don&#39;t have to do anything!&nbsp; Packaged software has already been installed on all of the systems in the environment, so to use the software, you just have to run the command.</p>
+<p>For example, to run the packaged version of R (version 3.2.3), you just need to run the R command:</p>
+<pre>
+akkornel@rice03:~$ R --version
+	R version 3.2.3 (2015-12-10) -- &quot;Wooden Christmas-Tree&quot;
+	Copyright (C) 2015 The R Foundation for Statistical Computing
+	Platform: x86_64-pc-linux-gnu (64-bit)
+</pre>
+<p>FarmShare 2 runs <a href="https://wiki.ubuntu.com/XenialXerus/">Ubuntu 16.04 LTS</a>, which means almost anything in the <a href="http://packages.ubuntu.com/xenial">Ubuntu Xenial package repository</a> is available to be installed.</p>
+<h3><a id="modules" name="modules"></a>Modules</h3>
+<p>Not all software comes in the form of an Ubuntu package.&nbsp; In fact, as time continues to move forward, the software we do have packaged will become more and more out-of-date.&nbsp;</p>
+<p>To provide up-to-date software, we use modules.&nbsp; Modularized software lives in shared, network-connected storage, and was either built by SRCC (like with R) or was provided a software vendor (like with SAS).</p>
+<h3><a id="custom" name="custom"></a>Your Own Software</h3>
+<p>In addition to the software that we provide for you to use, it is perfectly OK for to build and use your own stuff!&nbsp; We support several ways that you can build random software:</p>
+<ul>
+	<li>Building software from scratch.</li>
+	<li>Using a local package manager, like <a href="http://linuxbrew.sh">Linuxbrew</a> or <a href="https://spack.io">Spack</a>.</li>
+	<li>We also support <a href="/farmshare2/software-singularity">Singularity</a> containers.</li>
+</ul>
+<p>In addition, we have solutions for specific programming languages:</p>
+<ul>
+	<li>For Perl, we have <a href="/farmshare2/software-perllocallib">local::lib</a> and <a href="/farmshare2/software-perlbrew">Perlbrew</a>.</li>
+	<li>For Python, we have <a href="http://www.vanessasaur.us/2016/python-install/">virtualenv and conda</a>.</li>
+	<li>For Lua, there&#39;s <code>luarocks</code>.</li>
+</ul>
+<h3><a id="doit" name="doit"></a>Can You Do It For Me?</h3>
+<p>Maybe!&nbsp; Here are the things to think about when deciding if your software should be a module:</p>
+<ul>
+	<li><em>How many people are using it?</em>&nbsp; If it&#39;s just you, then it probably doesn&#39;t need to be made available to everyone.&nbsp; However, if this is something that is going to be used for an entirely group or class, then it&#39;s more likely to be made available.</li>
+	<li><em>Is there an existing package?</em>&nbsp; If there is an existing package repository for Xenial (that is, Ubuntu 16.04), that&#39;s much more likely to get accepted.</li>
+	<li><em>How much information do you have?</em>&nbsp; If you have an existing, easy-to-follow step-by-step guide for us, that makes things go faster, so it&#39;s more likely that your installation request will be accepted!</li>
+</ul>
+<p>Either way, you should always feel free to <a href="mailto:research-computing-support@stanford.edu?subject=FarmShare%202%20software%20installation%20request&amp;body=Hello!%20%20I%20would%20like%20some%20new%20software%20installed%20on%20FarmShare%202.">reach out</a> with your request!</p>
+<p><em>A special note on upgrading:</em> We at SRCC have to be careful when upgrading existing software, because we don&#39;t want to break existing uses of the software.&nbsp; Also, if the upgrade is for a package, then we will probably have to wait for the next quarterly FarmShare downtime.&nbsp; Modules can normally be upgraded faster, by making a new module for the new version.</p>
+<h2><a id="list" name="list"></a>Software Available</h2>
+<p>The table below lists all of the software packages that are installed on FarmShare 2 systems.&nbsp; It was last updated on Thursday, January 25, 2018 @ 9:30 AM US/Pacific time.</p>
+<p>For software provided via a module, you will have to load the module before you can use the software! Run <code>module avail</code> to display a list of available software. For example, to load MATLAB R2016b, the command would be <code>module load matlab/r2016b</code>).&nbsp; Enter that command into a shell (or into a batch job script) before you use the software.</p>
+<table align="center" border="1" cellpadding="1" cellspacing="1" style="background-color: rgb(255, 255, 255); width: 500px;">
+	<thead>
+		<tr>
+			<th scope="col">Name</th>
+			<th scope="col">Packaged Version</th>
+			<th scope="col">Module Version</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td><a href="http://www.abinit.org">ABINIT</a></td>
+			<td>7.8.2</td>
+			<td>8.4.2 (<code>abinit/8.4.2</code>)</td>
+		</tr>
+		<tr>
+			<td><a href="https://www.continuum.io/anaconda-overview">Anaconda</a></td>
+			<td>&nbsp;</td>
+			<td>
+				<p>5.0.1 for Python 2 (<code>anaconda/5.0.1</code>)</p>
+				<p>5.0.1 for Python 3 (<code>anaconda3/5.0.1</code>)</p>
+			</td>
+		</tr>
+		<tr>
+			<td><a href="http://www.ansys.com">ANSYS</a></td>
+			<td>&nbsp;</td>
+			<td>18.2&nbsp;(<code>ansys/18.2</code>)</td>
+		</tr>
+		<tr>
+			<td><a href="http://www.gnu.org/software/autoconf/autoconf.html">autoconf</a></td>
+			<td>2.69</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="https://www.gnu.org/software/automake/">automake</a></td>
+			<td>1.15.1</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="https://www.gnu.org/software/bash/">bash</a></td>
+			<td>4.3.48 (1)</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="http://bowtie-bio.sourceforge.net/bowtie2">bowtie</a></td>
+			<td>2.2.6</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="http://caffe.berkeleyvision.org">Caffe</a></td>
+			<td>&nbsp;</td>
+			<td>1.0.0 RC5 (<code>caffe/1.0.0-rc5</code>)</td>
+		</tr>
+		<tr>
+			<td><a href="http://caffe2.ai">Caffe2</a></td>
+			<td>&nbsp;</td>
+			<td>0.7.0 (<code>caffe2/0.7.0</code>)</td>
+		</tr>
+		<tr>
+			<td><a href="http://clang.llvm.org">clang</a></td>
+			<td>3.8.0</td>
+			<td>5.0.0 (<code>clang/5.0.0</code>)</td>
+		</tr>
+		<tr>
+			<td><a href="https://cmake.org/">cmake</a></td>
+			<td>3.10.2</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="https://www.ibm.com/products/ilog-cplex-optimization-studio">CPLEX</a></td>
+			<td>&nbsp;</td>
+			<td>12.7.1 (<code>cplex/12.7.1</code>)</td>
+		</tr>
+		<tr>
+			<td><a href="http://www.nvidia.com/object/cuda_home_new.html">CUDA</a></td>
+			<td>9.0.176</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="https://developer.nvidia.com/cudnn">cuDNN</a></td>
+			<td>&nbsp;</td>
+			<td>7.0.3 (<code>cudnn/7.0.3</code>)</td>
+		</tr>
+		<tr>
+			<td><a href="http://cole-trapnell-lab.github.io/cufflinks">Cufflinks</a></td>
+			<td>&nbsp;</td>
+			<td>2.2.1 (<code>cufflinks/2.2.1</code>)</td>
+		</tr>
+		<tr>
+			<td><a href="https://www.gnu.org/software/emacs/">Emacs</a></td>
+			<td>25.3.1</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="https://fishshell.com">fish</a></td>
+			<td>2.2.0</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="https://www.gams.com">GAMS</a></td>
+			<td>&nbsp;</td>
+			<td>24.8.3 (<code>gams/24.8.3</code>)</td>
+		</tr>
+		<tr>
+			<td><a href="http://gaussian.com">Gaussian</a></td>
+			<td>&nbsp;</td>
+			<td>
+				<p>G16.A03 (<code>guassian/g16.a03</code>)</p>
+				<p>GaussView 6 (<code>gaussview/6</code>)</p>
+			</td>
+		</tr>
+		<tr>
+			<td><a href="https://gcc.gnu.org/fortran/">GNU Fortran</a></td>
+			<td>5.5.0</td>
+			<td>7.1.0 (<code>gcc/7.1.0</code>)</td>
+		</tr>
+		<tr>
+			<td><a href="https://gcc.gnu.org/">GCC</a></td>
+			<td>5.5.0</td>
+			<td>7.1.0 (<code>gcc/7.1.0</code>)</td>
+		</tr>
+		<tr>
+			<td><a href="https://git-scm.com/">git</a></td>
+			<td>2.7.4</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="https://golang.org/">Go</a></td>
+			<td>1.6.2</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="http://www.gurobi.com">Gurobi</a></td>
+			<td>&nbsp;</td>
+			<td>7.0.2 (<code>gurobi/7.0.2</code>)</td>
+		</tr>
+		<tr>
+			<td><a href="https://www.haskell.org/">Haskell</a></td>
+			<td>
+				<p>7.10.3</p>
+				<p><a href="https://docs.haskellstack.org/en/stable/README/">stack</a><span style="background-color: transparent;">&nbsp;</span>1.5.1</p>
+			</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="https://software.intel.com/en-us/intel-parallel-studio-xe">Intel Parallel Studio XE</a></td>
+			<td>&nbsp;</td>
+			<td>
+				<p><span style="background-color: transparent;">2017 update 2 (</span><code>intel/17.0.2</code><span style="background-color: transparent;">)</span></p>
+			</td>
+		</tr>
+		<tr>
+			<td><a href="https://www.oracle.com/java/index.html">Java</a></td>
+			<td>8u151</td>
+			<td>9+181 (<code>openjdk/9+181</code>)</td>
+		</tr>
+		<tr>
+			<td><a href="http://julialang.org/">Julia</a></td>
+			<td>0.5.2</td>
+			<td>0.6.2 (<code>julia/0.6.2</code>)</td>
+		</tr>
+		<tr>
+			<td><a href="https://www.gnu.org/software/libtool/">libtool</a></td>
+			<td>2.4.6</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="https://www.lua.org/">Lua</a></td>
+			<td>
+				<p>5.1.5 (through the&nbsp;<code>lua5.1</code>&nbsp;command)</p>
+				<p>5.2.4 (through the&nbsp;<code>lua</code>&nbsp;and&nbsp;<code>lua5.2</code>&nbsp;commands)</p>
+				<p>5.3.1 (through the&nbsp;<code>lua5.3</code>&nbsp;command)</p>
+				<p><a href="https://luarocks.org/">LuaRocks</a>&nbsp;2.2.0 for Lua 5.1</p>
+			</td>
+			<td>
+				<p>LuaRocks 2.4.1 (<code>luarocks/2.4.1</code>)</p>
+				<p>For Lua 5.1 (through the&nbsp;<code>luarocks</code>&nbsp;command)</p>
+				<p>For Lua 5.2 (through the&nbsp;<code>luarocks-5.2</code>&nbsp;command)</p>
+				<p>For Lua 5.3 (through the&nbsp;<code>luarocks-5.3</code>&nbsp;command)</p>
+			</td>
+		</tr>
+		<tr>
+			<td><a href="http://luajit.org/">LuaJIT</a></td>
+			<td>2.0.5</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="http://www.wolfram.com/mathematica">Mathematica</a></td>
+			<td>&nbsp;</td>
+			<td>11.2 (<code>mathematica/11.2</code>)</td>
+		</tr>
+		<tr>
+			<td><a href="https://www.mathworks.com/products/matlab">MATLAB</a></td>
+			<td>&nbsp;</td>
+			<td>R2017b (<code>matlab/r2017b</code>)</td>
+		</tr>
+		<tr>
+			<td><a href="http://ab-initio.mit.edu/wiki/index.php/Meep">MEEP</a></td>
+			<td>1.3</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="https://www.mirbsd.org/mksh.htm">mksh</a></td>
+			<td>52c</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="https://mosh.org/">mosh</a></td>
+			<td>1.3.2</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="https://www.nano-editor.org/">nano</a></td>
+			<td>2.5.3</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="https://www.nag.com/nag-compiler">NAG</a></td>
+			<td>&nbsp;</td>
+			<td>6.1 (<code>nag/6.1</code>)</td>
+		</tr>
+		<tr>
+			<td><a href="https://ocaml.org">OCaml</a></td>
+			<td>
+				<p>4.02.3</p>
+				<p><a href="https://opam.ocaml.org">OPAM</a>&nbsp;1.2.2</p>
+			</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="http://openfoam.org">OpenFOAM</a></td>
+			<td>
+				<p>4.1</p>
+				<p>ParaView 5.0.1</p>
+			</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="https://www.open-mpi.org">Open MPI</a></td>
+			<td>1.10.2</td>
+			<td>3.0.0 (<code>openmpi/3.0.0</code>)</td>
+		</tr>
+		<tr>
+			<td><a href="https://www.perl.org/">Perl</a></td>
+			<td>
+				<p>5.22.1 (through the&nbsp;<code>perl</code>&nbsp;command)</p>
+				<p><a href="http://rakudo.org">Rakudo Perl 6</a>&nbsp;2015.11 (through the&nbsp;<code>perl6</code>&nbsp;command)</p>
+				<p><a href="https://perlbrew.pl">Perlbrew</a>&nbsp;0.74</p>
+			</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="http://www.pgroup.com">PGI</a></td>
+			<td>&nbsp;</td>
+			<td>Community Edition 17.4 (<code>pgi/17.4</code>)</td>
+		</tr>
+		<tr>
+			<td><a href="https://www.postgresql.org">PostgreSQL</a></td>
+			<td>&nbsp;</td>
+			<td>
+				<p>9.5.6 (<code>postgresql/9.5.6</code>)</p>
+				<p><a href="http://strom.kaigai.gr.jp">PG-Strom</a>&nbsp;v1</p>
+			</td>
+		</tr>
+		<tr>
+			<td><a href="http://pymol.org">PyMOL</a></td>
+			<td>1.7.2.1</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="https://www.python.org/">Python</a></td>
+			<td>
+				<p>2.7.12 (through the&nbsp;<code>python</code>&nbsp;and&nbsp;<code>python2</code>&nbsp;commands)</p>
+				<p>3.5.2 (through the&nbsp;<code>python3</code>&nbsp;command)</p>
+				<p><a href="https://virtualenv.pypa.io/en/stable">virtualenv</a>&nbsp;15.1.0</p>
+			</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="http://www.quantum-espresso.org">Quantum ESPRESSO</a></td>
+			<td>5.1</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="https://www.r-project.org/">R</a></td>
+			<td>3.4.3</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="https://www.rstudio.com/products/rstudio/">RStudio</a></td>
+			<td>&nbsp;</td>
+			<td>1.1.383 (<code>rstudio/1.10.383</code>)</td>
+		</tr>
+		<tr>
+			<td><a href="https://www.ruby-lang.org/en/">Ruby</a></td>
+			<td>2.3.1p112</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="https://www.rust-lang.org/en-US/">Rust</a></td>
+			<td>
+				<p>1.7.0</p>
+				<p><a href="https://crates.io">cargo</a>&nbsp;0.8.0</p>
+			</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="http://www.sas.com/en_us/software/sas9.html">SAS</a></td>
+			<td>&nbsp;</td>
+			<td>9.4 (<code>sas/9.4</code>)</td>
+		</tr>
+		<tr>
+			<td><a href="http://www.scons.org">SCons</a></td>
+			<td>2.4.1</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="http://singularity.lbl.gov/">Singularity</a></td>
+			<td>2.4.1</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="https://www.stata.com/why-use-stata">Stata</a></td>
+			<td>&nbsp;</td>
+			<td>15 (<code>stata-se/15</code>,&nbsp;<code>stata-mp/15</code>)</td>
+		</tr>
+		<tr>
+			<td><a href="https://swift.org">Swift</a></td>
+			<td>&nbsp;</td>
+			<td>4.0 (<code>swift/4.0</code>)</td>
+		</tr>
+		<tr>
+			<td><a href="http://www.tcl.tk">Tcl/Tk</a></td>
+			<td>8.6</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="http://www.tcsh.org/Welcome">tcsh</a></td>
+			<td>6.18.01</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="https://tmux.github.io/">tmux</a></td>
+			<td>2.1</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="http://torch.ch/">Torch</a></td>
+			<td>&nbsp;</td>
+			<td>7 (<code>torch/7</code>)</td>
+		</tr>
+		<tr>
+			<td><a href="http://www.vim.org/">vim</a></td>
+			<td>7.4</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="http://www.zsh.org/">zsh</a></td>
+			<td>5.1.1</td>
+			<td>&nbsp;</td>
+		</tr>
+	</tbody>
+</table>
+<p>&nbsp;</p>
+

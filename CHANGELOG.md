@@ -13,6 +13,11 @@ Critical items to know are:
  - migration guidance
  - changed behaviour
 
-## [master](https://github.com/vsoch/mkdocs-jekyll/tree/master)
+The latest version of vsoch/mkdocs-jekyll is included for each bullet (0.0.1)
+along with customizations done here (under each).
+
+## [master](https://github.com/stanford-rc/docs-farmshare/tree/master)
  - getting search working (0.0.1)
+   - export of Farmshare 2 from Drupal, included here
+   - adding favicon
  - start of theme  (0.0.0)

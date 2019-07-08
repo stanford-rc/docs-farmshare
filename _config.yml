@@ -14,33 +14,32 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: MkDocs Documentation Jekyll
-email: your-email@domain.com
-author: Dinosaur Avocado
+title: Farmshare 2
+email: research-computing-support@stanford.edu
+author: Research Computing Support
 description: > # this means to ignore newlines until "baseurl:"
-  Write an awesome description for your new site here. You can edit this
-  line in _config.yml. It will appear in your document head meta (for
-  Google search results) and in your feed.xml site description.
+  Farmshare is a compute environment available to students, faculty and staff with fully sponsored SunetIDs. It is suitable for coursework-related and miscellaneous computational tasks.
 
 # DO NOT CHANGE THE LINE OF THIS FILE without editing .circleci/circle_urls.sh
-baseurl: "/mkdocs-jekyll" # the subpath of your site, e.g. /blog
+baseurl: "/docs-farmshare" # the subpath of your site, e.g. /blog
 
 # This is mostly for testing
 url: "" # the base hostname & protocol for your site
 
 # Social (First three Required)
-repo: "https://github.com/vsoch/mkdocs-jekyll"
-github_user: "vsoch"
-github_repo: "mkdocs-jekyll"
+repo: "https://github.com/stanford-rc/docs-farmshare"
+github_user: "stanford-rc"
+github_repo: "docs-farmshare"
+# Based off of https://www.github.com/vsoch/mkdocs-jekyll
 
 # Optional
-twitter: vsoch
-linkedin: vsochat
-dockerhub: vanessa
+twitter: StanfordCompute
+#linkedin: vsochat
+dockerhub: srcc
 
 # Image and (square) dimension for logo (don't start with /)
 # If commented, will use material hat theme
-# logo: "assets/img/logo/SRCC-square-red.png"
+logo: "assets/img/logo/farmshare-reds-icon.png"
 logo_pixels: 34
 color: "#8c1515" # primary color for header, buttons
 

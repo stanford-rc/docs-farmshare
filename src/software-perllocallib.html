@@ -1,0 +1,167 @@
+<h1>Using Perl's local::lib for Perl modules</h1>
+<p class="summary">local::lib lets you have your own Perl modules, while still running system Perl.</p>
+<!--break-->
+<p>local::lib lets you build and install your own Perl modules, without having to build and install your own Perl.&nbsp; It uses the system&#39;s Perl, as well as as the system&#39;s build environment to build modules, which are then installed into your home directory.</p>
+<p>There are two major advantages to using local::lib:</p>
+<ul>
+	<li>You do not have to install your own Perl.</li>
+	<li>You can install whatever modules you want, without having to rely on SRCC to build and deploy them to a system Perl (which might not be doable easily) or a Perl module.</li>
+</ul>
+<p>local::lib can be a quick way to begin installing your own modules when the existing system Perl already meets your needs. However, there are also disadvantages to using local::lib:</p>
+<ul>
+	<li>You are completely reliant on the system Perl, which might not be new enough for you.</li>
+	<li>Only you have access to your Perl modules.&nbsp; Since other people can&#39;t access your local::lib, they have to get access to a system that has the necessary bits (Perl plus modules) installed already, or they have to use local::lib themselves.</li>
+	<li>The modules you build are not portable.&nbsp; You can not take a module that you built on FarmShare and copy it to Sherlock, because different libary versions are in use.&nbsp; Instead, you would have to build fresh in each environment.</li>
+</ul>
+<p>It is up to you to decide if local::lib is the right way to go, or if <a href="/farmshare2/software#doit">SRCC should build what you want instead</a>. Or, if you also need control over which Perl you want to use, <a href="/farmshare2/software-perlbrew">Perlbrew</a> might be a better option.</p>
+<h2>local::lib Compatibility</h2>
+<p>local::lib does what it does using environment variable tricks.&nbsp; Because of that, you have to be careful when mixing local::lib with other tools that also modify the environment:</p>
+<h3>local::lib and Perlbrew</h3>
+<p>Where local::lib only manages Perl modules, Perlbrew gives you an entire Perl environment that is your own.&nbsp; <em>However</em>, you must be very careful, because using local::lib <em>and</em> Perlbrew might cause problems.&nbsp; Perlbrew works by changing your <code>$PATH</code> environment variable to point to a local Perl installation, which is owned by you.&nbsp; local::lib also changes <code>$PATH</code>, as well as other Perl-related variables, so even if Perlbrew&#39;s changes take precedence, the other environment variables may cause unexpected effects.</p>
+<p>To be safe, you should either <strong>just use a global local::lib or just use Perlbrew, not both</strong>.&nbsp; Perlbrew can also manage multiple local::lib installations that are specific to each Perl you build.&nbsp; <a href="#perlbrew">Read more below</a>.</p>
+<h3>local::lib and Taint Mode</h3>
+<p>One of the environment variables set by local::lib is <code>$PERL5LIB</code>.&nbsp; This extends the list of places where Perl searches for modules.</p>
+<p>When a Perl script is run in taint mode, Perl intentionally ignores the <code>$PERL5LIB</code> environment variable.&nbsp; Running a script in Taint mode can be specified by the user (by placing <code>-T</code> in the <code>perl</code> command line), but it can also be specified by the script itself.&nbsp; The script does have a way of honoring <code>$PERL5LIB</code> even in taint mode (through the <a href="https://metacpan.org/pod/perl5lib">perl5lib module</a>), but that is rarely used: The perl5lib module is a module, which if installed via local::lib, creates a Catch-22 situation.</p>
+<p>Perl code which uses taint mode will not be able to use modules loaded through local::lib.</p>
+<h3>Software Module compatibility</h3>
+<p>NOTE: In this section, we are talking about the software modules that are loaded using the <code>module load</code> command.&nbsp; This section does <em>not</em> refer to Perl modules unless it explicitly says "Perl modules".</p>
+<p>Your local Perl modules <em>might</em> conflict with software modules loaded using the <code>module load</code> command.&nbsp; There are several ways that conflicts can occur:</p>
+<ul>
+	<li>If you use <code>module load</code> to load a module, that module wants a Perl module which you installed using local::lib, then you need to make sure local::lib is active in your session before you run the software.</li>
+	<li>If you load a GCC or clang software module, before you install a Perl module with local::lib, and that Perl module uses compiled code, then the Perl module will be built with that newer compiler (not the system compiler used for system Perl).&nbsp; That should be OK, but you will want to test your newly-built Perl module without the GCC/clang software module loaded, just to be sure it works.</li>
+	<li>if you load a software module to get access to a shared library, and then build a Perl module which uses that shared library; then every time you want to use that Perl module, you will need to load that software module first (so that the Perl module is able to find the shared library).</li>
+</ul>
+<h2>Installing local::lib</h2>
+<p>This part is really easy!&nbsp; We have already installed the software, but first you need to make sure it works.</p>
+<p>If you are using local::lib within Perlbrew, then you don&#39;t have to do anything here, so <a href="#perlbrew">skip down to the next section</a>.&nbsp; If you are <em>not</em> using Perlbrew, then you should load the local::lib module once, to make sure it works:</p>
+<pre>
+akkornel@rice05:~$ perl -Mlocal::lib
+Attempting to create directory /home/akkornel/perl5
+PATH=&quot;/home/akkornel/perl5/bin${PATH+:}${PATH}&quot;; export PATH;
+PERL5LIB=&quot;/home/akkornel/perl5/lib/perl5${PERL5LIB+:}${PERL5LIB}&quot;; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT=&quot;/home/akkornel/perl5${PERL_LOCAL_LIB_ROOT+:}${PERL_LOCAL_LIB_ROOT}&quot;; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT=&quot;--install_base \&quot;/home/akkornel/perl5\&quot;&quot;; export PERL_MB_OPT;
+PERL_MM_OPT=&quot;INSTALL_BASE=/home/akkornel/perl5&quot;; export PERL_MM_OPT;
+</pre>
+<p>The first message, &quot;Attempting to create directory /home/akkornel/perl5&quot;, is what&#39;s important (although it will show your username, instead of "akkornel").&nbsp; If you see that message, and no errors, then local::lib is ready to use!</p>
+<p>All the files installed by local::lib go into <code>~/perl5</code>, but it will <em>not</em> use the <code>~/perl5/perlbrew</code> directory, which is used exclusively by Perlbrew.</p>
+<p>Now that local::lib has finished its &quot;installation&quot;, you need to decide how to use it:</p>
+<ul>
+	<li>If you only want local::lib to be active in certain cases, read <a href="#useManually">Using local::lib manually</a>.</li>
+	<li>If you want local::lib to be activated every time you start a new shell, read <a href="#useAutomatically">Loading local::lib automatically</a>.</li>
+</ul>
+<h3><a id="perlbrew" name="perlbrew"></a>Installing local::lib with Perlbrew</h3>
+<p>If you are using Perlbrew, then no extra work is required, because Perlbrew includes the ability to create multiple local::lib environments inside your local Perl.&nbsp; Here&#39;s how to use local::lib with Perlbrew:</p>
+<ol>
+	<li>If you don&#39;t have a local Perl built already, use the <code>perlbrew install</code> command to install one.</li>
+	<li>Run <code>perlbrew use</code> to activate a local Perl, followed by <code>perlbrew lib create</code> to create the local::lib environment:<br />
+		<pre>
+akkornel@rice03:~$ perlbrew list
+  perl-5.24.0
+akkornel@rice03:~$ perlbrew use 5.24.0
+akkornel@rice03:~$ perlbrew lib create awesome
+lib 'perl-5.24.0@awesome' is created.
+</pre></li>
+	<li>To activate a local Perl <em>with</em> a local::lib, run <code>perlbrew use version@libName</code>:<br />
+		<pre>
+akkornel@rice03:~$ perlbrew list
+* perl-5.24.0
+  perl-5.24.0@awesome
+akkornel@rice03:~$ perlbrew use 5.24.0@awesome
+Attempting to create directory /home/akkornel/.perlbrew/libs/perl-5.24.0@awesome
+</pre></li>
+<p>Once you have run <code>perlbrew use</code> to activate your Perl with local::lib, code that you run (and modules that you install) will use (and be installed to) the separate Perlbrew local::lib directory that was created when you ran <code>perlbrew use</code>.</p>
+<p>To switch back to your local Perl <em>without</em> the local::lib, use <code>perlbrew use</code>, but without the local::lib name:</p>
+<pre>
+akkornel@rice03:~$ perlbrew list
+  perl-5.24.0
+* perl-5.24.0@awesome
+akkornel@rice03:~$ perlbrew use 5.24.0
+akkornel@rice03:~$ perlbrew list
+* perl-5.24.0
+  perl-5.24.0@awesome
+</pre>
+</ol>
+<h2>Using local::lib</h2>
+<p>There are three ways to use local::lib:</p>
+<ol>
+	<li>You can use it on a case-by-case basis, only when you want it.</li>
+	<li>You can have local::lib run automatically, every time you use Perl.</li>
+</ol>
+<p>Each method is discussed in detail more below:</p>
+<h3><a id="useManually" name="useManually"></a>Using local::lib manually</h3>
+<p>There are two ways of activating local::lib manually:</p>
+<ol>
+	<li>You can use local::lib for a single Perl execution.</li>
+	<li>Use can use local::lib for a single session.</li>
+</ol>
+<p>If you want to use local::lib for a single Perl execution, simply include <code>-Mlocal::lib</code> in the Perl command line, like so:</p>
+<pre>perl -Mlocal::lib my_perl_file.pl</pre>
+<p>If you want to use local::lib for an entire session, run this command for bash:</p>
+<pre>
+eval $(perl -I$HOME/perl5/lib -Mlocal::lib)</pre>
+<p>&hellip; or run this command for csh or tcsh:</p>
+<pre>
+eval `perl -I$HOME/perl5/lib -Mlocal::lib=--shelltype=csh`</pre>
+<p>That will activate local::lib until you deactivate it, or until the current session ends (whichever comes first).  Other sessions, even sessions running on the same machine, will not use local::lib (unless you manually activate it in that session).</p>
+<h3><a id="useAutomatically" name="useAutomatically"></a>Loading local::lib automatically</h3>
+<p>To load local::lib automatically, you will need to make a change to one of the shell scripts that are executed every time you start a new session.&nbsp; Exactly what change to make depends on the shell you use.</p>
+<p>If you are running bash, use this command to edit your .bashrc file:</p>
+<pre class="sh_perl sh_sourceCode">
+echo <span class="sh_string">&#39;eval &quot;$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)&quot;&#39;</span> <span class="sh_symbol">&gt;&gt; ~/.</span>bashrc</pre>
+<p>If you are running csh/tcsh, run this command to edit your .cshrc file:</p>
+<pre class="sh_perl sh_sourceCode">
+echo <span class="sh_string">&#39;eval `perl -I$HOME/perl5/lib/perl5 -Mlocal::lib=--shelltype=csh`&#39;</span> <span class="sh_symbol">&gt;&gt;</span> <span class="sh_symbol">~/.</span>cshrc</pre>
+<p>Once you have made the change, log out and log back in for the change to take effect.</p>
+<p>If you ever decide to remove local::lib, simply remove the corresponding line from your .bashrc or .cshrc file.</p>
+<h4>Deactivating local::lib temporarily</h4>
+<p>If local::lib is loaded automatically, and you would like to deactivate it temporarily, the following line of Perl code will do that in bash:</p>
+<pre>eval $(perl -Mlocal::lib=--deactivate)</pre>
+<p>&hellip; and the following line for csh or tcsh:</p>
+<pre>eval `perl -Mlocal::lib=--shelltype=csh,--deactivate`</pre>
+<p>local::lib will remain deactivated for the current session only, and will come back the next time you log in (or start a new shell).</p>
+<h2>Installing Perl Modules</h2>
+<p>Now that you have local::lib working, you probably want to install modules.&nbsp; When local::lib is active, installing modules is as simple as running the <code>cpan</code> command:</p>
+<pre>akkornel@rice05:~$ eval $(perl -I$HOME/perl5/lib -Mlocal::lib)
+akkornel@rice05:~$ cpan install Readonly
+Loading internal null logger. Install Log::Log4perl for logging messages
+Reading '/home/akkornel/.cpan/Metadata'
+ Database was generated on Tue, 18 Oct 2016 16:29:02 GMT<br />
+Running install for module 'Readonly'
+... lots of lines snipped ...
+Installing /home/akkornel/perl5/lib/perl5/Readonly.pm
+Installing /home/akkornel/perl5/man/man3/Readonly.3pm
+ SANKO/Readonly-2.05.tar.gz
+ ./Build install&nbsp; -- OK
+</pre>
+<p>in the above example, the Readonly module had several required packages that were not installed, so the <code>cpan</code> command downloaded and installed those as well.&nbsp; The system&#39;s Perl, compiler, and libraries were used for the build, and the modules you build will only be used when local::lib is active.  Also, in the session used to make the above example, local::lib was not already loaded, so the appropriate command had to be run in order to load it.</p>
+<p>One issue you may encounter, when building your own modules, is missing header files.&nbsp; For example, the first time <code>cpan install Crypt::SSLeay</code> was run on FarmShare 2, it failed to build:</p>
+<pre>
+akkornel@rice05:~$ eval $(perl -I$HOME/perl5/lib -Mlocal::lib)
+akkornel@rice05:~$ cpan install Crypt::SSLeay
+Loading internal null logger. Install Log::Log4perl for logging messages
+Reading &#39;/home/akkornel/.cpan/Metadata&#39;
+  Database was generated on Tue, 18 Oct 2016 16:29:02 GMT
+Running install for module &#39;Crypt::SSLeay&#39;
+... many, many lines of output skipped here ...
+openssl-version.c:2:30: fatal error: openssl/opensslv.h: No such file or directory
+compilation terminated.
+Failed to build and link a simple executable using OpenSSL
+No &#39;Makefile&#39; created  NANIS/Crypt-SSLeay-0.72.tar.gz
+  /home/akkornel/perl5/perlbrew/perls/perl-5.24.0/bin/perl Makefile.PL -- NOT OK
+akkornel@rice05:~$
+</pre>
+<p>This failure happened because a package was missing:&nbsp; Crypt::SSLeay uses OpenSSL to do the actual work; although the OpenSSL libraries were installed, the OpenSSL header files were not.&nbsp; Header files are only needed when you are building software, so the lack of header files caused the build to fail.&nbsp; In this case, installing the libssl-dev package was enough to solve the problem.</p>
+<p>If you are trying to use <code>cpan</code> , and it fails, it may be due to missing libraries or missing header files.&nbsp; Feel free to <a href="#support">contact us</a> for help!</p>
+<h2><a id="support" name="support"></a>Getting Support</h2>
+<p>SRCC is happy to help you!&nbsp; To get support, all you need to do is <a href="mailto:research-computing-support@stanford.edu?subject=FarmShare%202%20Perlbrew%20question">email us</a>.&nbsp; When you email us, be sure to include the following information:</p>
+<ul>
+	<li>The name of the system you were on when you had problems.</li>
+	<li>The output of the <code>module list</code>, <code>env</code>, and <code>perl -V</code> commands.<br />
+		It would be nice if you could attach the output of those commands as separate files, instead of pasting it directly in the email!</li>
+	<li>What you are trying to do.</li>
+	<li>The <em>complete</em> output that you got when you ran your scripts/commands.<br />
+		It would be nice if you could attach this as a separate file, instead of pasting it directly in the email!</li>
+</ul>
+<p>If the problem is a missing library or missing header files, we can normally address that quickly.&nbsp; If the problem is an out-of-date library, that will take longer to address.</p>
+<p>Good luck!</p>

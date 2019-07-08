@@ -1,0 +1,142 @@
+<h1>Using Perlbrew for custom Perl environments</h1>
+<p class="summary">Perlbrew lets you have your own complete Perl installation, while leveraging the system&#39;s libraries and toolchain.</p>
+<!--break-->
+<p>Perlbrew is a Perl module that orchestrates the building of Perls within your home directory, and modifying your session&#39;s environment so that you can use your local Perl automatically.&nbsp; Almost all major versions of Perl can be built using Perlbrew, and Perl code run by your local Perl does not know (or care) that you are running from a local Perl (as opposed to the system Perl).</p>
+<p>There are two major advantages to using Perlbrew:</p>
+<ul>
+	<li>You can have the latest released version of Perl, without having to wait for SRCC to build and install it.</li>
+	<li>You can install whatever modules you want, without having to rely on SRCC to build and deploy them to a system Perl (which might not be doable easily) or a Perl module.</li>
+</ul>
+<p>Perlbrew is by far the best option when you are doing any sort of Perl development, because it is so easy to blow away and rebuild the environment when something goes wrong.&nbsp; However, there are also disadvantages to using Perlbrew:</p>
+<ul>
+	<li>Only you have access to your Perlbrew.&nbsp; Since other people can&#39;t access it directly, they have to get access to a system that has the necessary bits (Perl plus modules) installed already, or they have to make their own Perlbrew.</li>
+	<li>Each Perlbrew is not portable.&nbsp; You can not take a Perl that you built on FarmShare and copy it to Sherlock, because different libary versions are in use.&nbsp; Instead, you would have to build fresh in each environment.</li>
+	<li>Each Perl takes space in your home directory.&nbsp; For example, Perl 5.24 with a number of modules takes ~725 MB of space.</li>
+</ul>
+<p>It is up to you to decide if Perlbrew is the right way to go, or it <a href="/farmshare2/software#doit">SRCC should build it for you</a> as a module.&nbsp; Another alternative, if you just want a module and are OK with using the system Perl, is to <a href="/farmshare2/software-perllocallib">use local::lib</a>.</p>
+<h2>Installing Perlbrew</h2>
+<p>This part is really easy!&nbsp; You don&#39;t need to install anything (we did that already), <em>but</em> you do need to initialize Perlbrew.&nbsp; You only have to do this once, and it&#39;s easy:</p>
+<pre>
+akkornel@rice05:~$ perlbrew init
+
+perlbrew root (~/perl5/perlbrew) is initialized.
+
+Append the following piece of code to the end of your ~/.bash_profile and start a
+new shell, perlbrew should be up and fully functional from there:
+
+    source ~/perl5/perlbrew/etc/bashrc
+
+Simply run `perlbrew` for usage details.
+
+Happy brewing!
+</pre>
+<p>You might be told to add something to your <code>~/.bash_profile</code> file, or you might be told to edit a different file (it depends on what shell you are using).&nbsp; Once that is done, log out and log back in.</p>
+<p>For reference, Perlbrew installs all of its software at the path <code>~/perl5/perlbrew</code>.&nbsp; If you really want to get rid of everything, simply delete that directory, undo the change to your shell profile, log out, and log back in.</p>
+<h2>Building a Perl</h2>
+<p>Once Perlbrew has been configured, you can go ahead and install Perl!&nbsp; Perlbrew has Perls going back as far as 5.4.5; new Perls become available once they are released.</p>
+<p>First, find out what Perl versions are available:</p>
+<pre>
+akkornel@rice05:~$ perlbrew available
+  perl-5.24.0
+  perl-5.22.2
+  perl-5.20.3
+... there are lots more!
+</pre>
+<p>Once you have chosen the Perl you want to install, simply run <code>perlbrew install</code> with the Perl version you want.&nbsp; For example, <code>perlbrew install perl-5.24.0</code>.&nbsp; Or, to get the latest stable Perl, you can run <code>perlbrew install stable</code>, like so:</p>
+<pre>
+akkornel@rice05:~$ perlbrew --notest install stable
+Installing /home/akkornel/perl5/perlbrew/build/perl-5.24.0 into ~/perl5/perlbrew/perls/perl-5.24.0
+
+This could take a while. You can run the following command on another shell to track the status:
+
+  tail -f ~/perl5/perlbrew/build.perl-5.24.0.log
+
+perl-5.24.0 is successfully installed.
+</pre>
+<p>The <code>--notest</code> option is used to disable all of the post-build tests.&nbsp; This is needed because one of the tests (the filesystem access-time test) fails (because we don&#39;t track last-accessed time on network storage).&nbsp; This is expected by us, but Perlbrew expects all tests to pass, so <code>--notest</code> is used to disable post-build testing.</p>
+<p>You should expect the entire build process to take about half an hour.&nbsp; Once built, your Perl will remain available until you change or delete it.</p>
+<h2>Using Your Perl</h2>
+<p>Once Perl is installed, you can use it on any of the systems in the cluster.&nbsp; To see what versions are available, run <code>perlbrew list</code>:</p>
+<pre>
+akkornel@rice05:~$ perlbrew list
+  perl-5.24.0
+</pre>
+<p>To actually <em>use</em> a particular Perl, the command is <code>perlbrew use</code>:</p>
+<pre>
+akkornel@rice05:~$ perl -v | grep version
+This is perl 5, version 22, subversion 1 (v5.22.1) built for x86_64-linux-gnu-thread-multi
+akkornel@rice05:~$ perlbrew list
+  perl-5.24.0
+akkornel@rice05:~$ perlbrew use 5.24
+
+ERROR: The installation &quot;5.24&quot; is unknown.
+
+akkornel@rice05:~$ perlbrew use 5.24.0
+akkornel@rice05:~$ perl -v | grep version
+This is perl 5, version 24, subversion 0 (v5.24.0) built for x86_64-linux
+</pre>
+<p>The <code>perlbrew use</code> command can also be placed into scripts, so that your batch jobs can use the Perl you built. &nbsp;You can also leave out the &quot;perl-&quot; prefix when you run <code>perlbrew use</code>.</p>
+<h3>Software Module compatibility</h3>
+<p>NOTE: In this section, we are talking about the software modules that are loaded using the <code>module load</code> command.&nbsp; This section does <em>not</em> refer to Perl modules, unless it explciitly says &quot;Perl module&quot;.</p>
+<p>Your local Perls <em>might</em> conflict with software modules loaded using the <code>module load</code> command.&nbsp; There are several ways that conflicts can occur:</p>
+<ul>
+	<li>If you run <code>perlbrew use</code>, and <em>then</em> use <code>module load</code> to load a module, and <em>that</em> module uses Perl, then that module might end up using your local Perl.&nbsp; This is normally OK, <em>as long as</em> your local Perl has all of the Perl modules that the software wants to use.</li>
+	<li>If you load a GCC or clang module, before you run <code>perlbrew install</code>, then your Perl will be built with that newer compiler.&nbsp; That should be OK, but you will want to test your newly-built Perl without the GCC/clang module loaded.</li>
+	<li>if you load a software module to get access to a shared library, and then build a Perl module which uses that shared library; then every time you want to use that Perl module, you will need to load that software module first (so that the Perl module is able to find the shared library).</li>
+</ul>
+<p>The important thing to remember is, in most cases, the later software is loaded, the higher its precedence.&nbsp; If you run <code>module load perl/5.24.0</code>, and then run <code>perlbrew use 5.22.2</code>, then you will <em>probably </em>be using Perl 5.22 (running <code>perl -v</code> will tell you for sure).</p>
+<h2>Installing Perl Modules</h2>
+<p>Now that you have a Perl built, you probably want to install modules.&nbsp; Installing modules is easy enough with Perlbrew: First you run <code>perlbrew use</code> to load the Perl version that should get the modules, then you run <code>cpan install Module_Name</code>, which will find the latest version of the module, build it, test it, and (assuming all those steps passed) install it:</p>
+<pre>
+akkornel@rice05:~$ perlbrew list
+  perl-5.24.0
+akkornel@rice05:~$ perlbrew use 5.24.0
+akkornel@rice05:~$ cpan install Crypt::SSLeay
+Loading internal null logger. Install Log::Log4perl for logging messages
+Reading &#39;/home/akkornel/.cpan/Metadata&#39;
+  Database was generated on Tue, 18 Oct 2016 16:29:02 GMT
+Running install for module &#39;Crypt::SSLeay&#39;
+... many, many lines of output skipped here ...
+Appending installation info to /home/akkornel/perl5/perlbrew/perls/perl-5.24.0/lib/5.24.0/x86_64-linux/perllocal.pod
+  NANIS/Crypt-SSLeay-0.72.tar.gz
+  /usr/bin/make install  -- OK
+</pre>
+<p>in the above example, the Crypt::SSLeay module had several required packages that were not installed, so <code>cpan</code> downloaded and installed those as well.&nbsp; The system&#39;s compiler, and system libraries, were used for the build, but all Perl code was executed by your local Perl (<em>not</em> system Perl), and the modules you build will only be used by your local Perl (specifically, the one you&#39;re using to run the <code>cpan</code> command).</p>
+<p>One issue you may encounter, when building your own modules, is missing header files.&nbsp; For example, the first time <code>cpan install Crypt::SSLeay</code> was run on FarmShare 2, it failed to build:</p>
+<pre>
+akkornel@rice05:~$ perlbrew use 5.24.0
+akkornel@rice05:~$ cpan install Crypt::SSLeay
+Loading internal null logger. Install Log::Log4perl for logging messages
+Reading &#39;/home/akkornel/.cpan/Metadata&#39;
+  Database was generated on Tue, 18 Oct 2016 16:29:02 GMT
+Running install for module &#39;Crypt::SSLeay&#39;
+... many, many lines of output skipped here ...
+openssl-version.c:2:30: fatal error: openssl/opensslv.h: No such file or directory
+compilation terminated.
+Failed to build and link a simple executable using OpenSSL
+No &#39;Makefile&#39; created  NANIS/Crypt-SSLeay-0.72.tar.gz
+  /home/akkornel/perl5/perlbrew/perls/perl-5.24.0/bin/perl Makefile.PL -- NOT OK
+akkornel@rice05:~$
+</pre>
+<p>This failure happened because a package was missing:&nbsp; Crypt::SSLeay uses OpenSSL to do the actual work; although the OpenSSL libraries were installed, the OpenSSL header files were not.&nbsp; Header files are only needed when you are building software, so the lack of header files caused the build to fail.&nbsp; In this case, installing the libssl-dev package was enough to solve the problem.</p>
+<p>If you are trying to use <code>cpan</code> in your own Perl, and <code>cpan</code> fails, it may be due to missing libraries or missing header files.&nbsp; Feel free to <a href="#support">contact us</a> for help!</p>
+<h2>Other Commands</h2>
+<p>In addition to the commands we&#39;ve explored so far, there are other helpful commands available:</p>
+<ul>
+	<li><code>perlbrew off</code> turns off Perlbrew for the current shell.&nbsp; In other words, this switches you back to the Perl version that is installed on the system.</li>
+	<li><code>perlbrew upgrade-perl</code> will take an already-installed Perl, and upgrade it.&nbsp; For example, if you used <code>perlbrew install perl-5.22.1</code> to build and install Perl 5.22.1, you could upgrade that by running <code>perlbrew use 5.22.1</code>, followed by <code>perlbrew upgrade-perl</code>.</li>
+	<li><code>perlbrew switch</code> makes a specific Perl the defaut one for all future sessions.&nbsp; So, if you have already built Perl 5.24.0 (using <code>perlbrew install perl-5.24.0</code>), then running <code>perlbrew switch 5.24.0</code> will make Perl 5.24.0 available every time you start a new session.&nbsp; To un-do this command, run <code>perlbrew switch-off</code>.</li>
+</ul>
+<h2><a id="support" name="support"></a>Getting Support</h2>
+<p>SRCC is happy to help you!&nbsp; To get support, all you need to do is <a href="mailto:research-computing-support@stanford.edu?subject=FarmShare%202%20Perlbrew%20question">email us</a>.&nbsp; When you email us, be sure to include the following information:</p>
+<ul>
+	<li>The name of the system you were on when you had problems.</li>
+	<li>The output of the <code>perlbrew list</code> and <code>perl -V</code> commands.<br />
+		It would be nice if you could attach the output of those commands as a separate file, instead of pasting it directly in the email!</li>
+	<li>What you are trying to do.</li>
+	<li>The <em>complete</em> output that you got when you ran your scripts/commands.<br />
+		It would be nice if you could attach this as a separate file, instead of pasting it directly in the email!</li>
+</ul>
+<p>If the problem is a missing library or missing header files, we can normally address that quickly.&nbsp; If the problem is an out-of-date library, that will take longer to address.</p>
+<p>Good luck!</p>
+

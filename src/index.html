@@ -1,0 +1,45 @@
+<h1>Farmshare2</h1>
+<p class="summary">FarmShare is Stanford&#39;s <a href="#eligibility">community computing environment</a>. It is intended for use in coursework and unsponsored research; it is not approved for use with&nbsp;<a href="#highRisk">high-risk data</a>, or for use in&nbsp;<a href="#sherlock">sponsored research</a>.</p>
+<!--break-->
+<p>FarmShare 2 is the latest iteration of the FarmShare computing environment. FarmShare evolved from the old, public UNIX cluster, once located on the second floor of Sweet Hall, which was itself a successor to systems like the University&#39;s original timeshare service, LOTS. FarmShare 2 came online in Autumn Quarter 2016.</p>
+<h2><span style="color: inherit; font-family: inherit; font-size: 31.5px; font-weight: bold;">Cluster Components</span></h2>
+<p>FarmShare 2 consists of three classes of servers:</p>
+<ul>
+	<li>The&nbsp;<em>rice</em>servers are login nodes, where you log in to run commands, access files, submit jobs, and review results. The <em>rice</em>servers also have access to <a href="https://uit.stanford.edu/service/afs">Stanford AFS</a>. These servers can be used for interactive work, but some resource limits are enforced, so if you need to run a long-running or compute- and/or memory-intensive process you should submit a job.&nbsp; Remember, these are servers for research and academic use, not for administrative or business functions.</li>
+	<li>The&nbsp;<em>wheat</em>servers are compute nodes. They have more CPU power and more memory than the rice servers, and are meant for both interactive jobs (where you log in to control what happens) and batch jobs (where everything runs from a script that you submit). Some <i>wheat</i> nodes also have significantly more memory than others.&nbsp; Like the rice servers, these are available for use for coursework or research purposes.</li>
+	<li>The&nbsp;<em>oat</em>servers are GPU compute nodes. They are similar to the <em>wheat</em>nodes, except that they also have GPUs installed. These nodes are meant for computational academic or research work that is able to take advantage of a GPU (<em>e.g.</em>, TensorFlow jobs fit into this category).</li>
+</ul>
+<p>All FarmShare 2 servers run <a href="https://wiki.ubuntu.com/XenialXerus/ReleaseNotes">Ubuntu 16.04 LTS</a>&nbsp;64-bit (x86-64 architecture).</p>
+<p>As of June 2017, FarmShare 2 currently has 14&nbsp;<em>rice</em>servers, 17 <em>wheat</em>servers (including 2 with additional memory), and 10&nbsp;<em>oat</em>servers (each with a single GPU).</p>
+<h2>Connecting</h2>
+<p>FarmShare 2 uses SSH to make an encrypted connection from your computer to one of the cluster nodes.</p>
+<p>If you want to connect to one of the login nodes, SSH to <code>rice.stanford.edu</code>&nbsp;using your SUNetID. You will be connected to whichever <em>rice</em>node is the least-loaded at the time. If you have an allocation on one of the compute nodes, you can use SSH to connect directly to the node where your job has started, but please use this for troubleshooting only. In either case, two-step authentication is part of the login process.</p>
+<p><a href="/farmshare2/connecting">Read more about connecting to FarmShare 2 with SSH</a>, and <a href="/farmshare2/connecting-keys">get FarmShare 2 host keys and fingerprints</a>.</p>
+<h2>Using Software</h2>
+<p>FarmShare 2 has lots of free and commercial software available to use. We provide software that comes with Ubuntu, software that we package ourselves, and we also provide the capability for you to build and use software yourself!</p>
+<p><a href="/farmshare2/software">Read more about software on FarmShare 2</a>.</p>
+<h2>Running Jobs</h2>
+<p>FarmShare 2 uses the <a href="http://slurm.schedmd.com/">Slurm</a> job-submission system. This is the same system used elsewhere in SRCC (FarmShare 2 has its own installation, separate from the others). You can use Slurm to submit batch jobs (which run while your&#39;re away), start interactive jobs (which automatically connects you to a compute node), and request a general allocation of computing resources (so you can connect multiple times).</p>
+<h2><a id="eligibility" name="eligibility"></a>Eligibility</h2>
+<p>FarmShare 2 is available to anyone who has a&nbsp;<em>full-service SUNetID</em>. A full-service SUNetID is one that has email service; if you can successfully get to <a href="https://webmail.stanford.edu">Stanford Webmail</a>, then you are eligible to use FarmShare 2 for academic work and small research jobs! If you do not already have a full-service SUNetID (maybe because you are a visiting researcher), you can get a sponsored full-service SUNetID.&nbsp;<a href="https://uit.stanford.edu/service/accounts/sunetids">Read more about SUNetID levels</a>.</p>
+<p>Note that, in order to get a sponsored SUNetID, a monthly fee will be charged by University IT. Only people with spending authority may sponsor a SUNetID. Sponsorships can be obtained and paid for through <a href="https://uit.stanford.edu/service/sponsorship/">Sponsorship Manager</a>.&nbsp; Current rates are available from the <a href="https://uit.stanford.edu/rates/sponsorship">Sponsored Account Rates page</a>.</p>
+<p>FarmShare 2 is meant for <a href="https://uit.stanford.edu/guide/riskclassifications">low- or moderate-risk data</a>, and is primarily intended for class work and for other general- and personal-use work (research and training). It is not meant for sponsored research (where you have a dedicated source of funding), and is <em>not</em> approved for handling high-risk data.</p>
+<h3>CS Students</h3>
+<p>If you&#39;re a CSD (Stanford Computer Science Department) student, that you may want to use the Xenon or myth clusters.&nbsp;<a href="http://cs.stanford.edu/computing-guide/overview">Read more in CS&#39;s Computing Guide</a>.</p>
+<h3><a id="sherlock" name="sherlock"></a>Using Sherlock for Sponsored and Departmental Research</h3>
+<p>If you are doing sponsored or departmental research, then FarmShare might not be the right place for you. Instead, if the data you are working with is all low-risk, then you should consider getting access to Sherlock!&nbsp;<a href="https://sherlock.stanford.edu">The Sherlock web site</a> has more information about how to get access.</p>
+<h3><a id="highRisk" name="highRisk"></a>High-Risk Computing</h3>
+<p>If you have high-risk data of any kind, please <a href="mailto:research-computing-support@stanford.edu?subject=High-risk%20computing%20request&amp;body=Hello!%0A%0AI%20would%20like%20to%20talk%20with%20someone%20from%20SRCC%20about%20doing%20research%20involving%20high-risk%20data.%0A%0A(Also%2C%20please%20say%20if%20your%20high-risk%20data%20is%20PHI!)">let us know</a>, and we can help you figure something out!</p>
+<h2>Getting Help</h2>
+<p>Most FarmShare 2 support is provided during business hours, either via email or during academic-year office hours.</p>
+<p>For email support, send a message to <a href="mailto:research-computing-support@stanford.edu?subject=FarmShare%202%20(Add%20more%20detail%20here)&amp;body=Please%20type%20your%20support%20request%20here">srcc-support@stanford.edu</a>. Make sure you have &quot;FarmShare 2&quot; somewhere in the subject line, and please be as detailed as possible with your request!</p>
+<p>During the academic year (Autumn through Spring, excluding holidays and breaks), in-person support is available at SMACC (Stat, Math, Algorithmic and Computational Consulting) <a href="http://stanford.edu/~rezab/smacc/">office hours</a>, which take place weekly.</p>
+<h3>Adding Capacity</h3>
+<p>FarmShare 2 does not have a dedicated funding source available to it, and we appreciate any contributions that people can make.&nbsp; For example:</p>
+<ul>
+	<li>If you are using FarmShare 2 for a class, let your department chair know that you are using it.</li>
+	<li>If you are a registered student group using FarmShare 2, let your faculty representative and/or ASSU know that you are using it.</li>
+	<li>If you have spare funds available, <a href="mailto:srcc-support@stanford.edu?subject=FarmShare%202%20funds%20contribution&amp;body=Hello!%0A%0AI%20have%20some%20spare%20funds%20available%2C%20and%20would%20be%20interested%20in...%0A%0Adoing%20an%20iJournals%20transfer%20to%20SRCC.%0Ahelp%20purchase%20FarmShare%202%20hardware%20using%20funds%20from%20my%20PTA.">email us</a> and we can arrange either a iJournals transfer to our PTA, or a capital purchase from your PTA.</li>
+	<li>If you already have hardware being supported by SRCC, we may be able to use that hardware once you are done with it.</li>
+</ul>
+<p>We appreciate anything you can do to get the word out about FarmShare 2 and how awesome it is!</p>

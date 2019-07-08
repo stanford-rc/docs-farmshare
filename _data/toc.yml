@@ -1,12 +1,23 @@
-- title: "Getting Started"
-  url: "docs/getting-started"
+- title: "Connecting"
+  url: "docs/connecting"
   children:
-    - title: Features
-      url: "docs/getting-started#getting-started"
-    - title: Development
-      url: "docs/getting-started#development"
+    - title: Secure SSH Shell
+      url: "docs/connecting#secure-shell-ssh"
+    - title: Mobile Shell
+      url: "docs/connecting#mobile-shell-mosh"
     - title: Customization
-      url: "docs/getting-started#customization"
+      url: "docs/connecting#remote-display"
+- title: "Software"
+  url: "docs/software"
+  children:
+    - title: Packages
+      url: "docs/software#packages"
+    - title: Modules
+      url: "docs/software#modules"
+    - title: Your Own Software
+      url: "docs/software#your-own-software"
+    - title: Software Available
+      url: "docs/software#software-available"
 - title: "About"
   url: "about"
 - title: "News"
